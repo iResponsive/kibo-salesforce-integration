@@ -7,6 +7,6 @@
   ],
   "name": "Salesforce-Kibo POC",
   "namespace": "",
-  "sfdcLoginUrl": "https://login.salesforce.com",
+  "sfdcLoginUrl": "https://resourceful-fox-eqppnz-dev-ed.trailblaze.my.salesforce.com",
   "sourceApiVersion": "59.0"
 }
