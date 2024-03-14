@@ -1,0 +1,82 @@
+.card {
+  background-color: white;
+  padding: 20px;
+  width: 535px;
+  height: auto;
+}
+
+.header {
+  text-align: center;
+  font-weight: bold;
+}
+
+.body {
+  margin-top: 10px;
+}
+.total {
+  display: ruby-text;
+  text-align: end;
+  margin-right: 13px;
+  margin-top: 7px;
+}
+
+.address {
+  margin-top: 20px;
+}
+
+.address_body {
+  display: grid;
+  margin-top: 10px;
+}
+
+.shipment {
+  margin-top: 20px;
+}
+
+.payment {
+  margin-top: 20px;
+}
+
+.button {
+  margin-top: 20px;
+}
+
+.label {
+  font-weight: bold;
+}
+
+.data {
+  margin-left: 10px;
+}
+
+.icon {
+  height: 45px;
+  width: 45px;
+  background: #0070d2;
+  cursor: pointer;
+}
+
+.slds-icon {
+  height: 24px !important;
+  width: 24px !important;
+}
+
+.slds-modal__container {
+  max-width: 26rem !important;
+  min-width: 19rem !important;
+}
+
+.slds-dropdown-trigger--click .slds-dropdown,
+.slds-dropdown-trigger--click:hover .slds-dropdown,
+.slds-dropdown-trigger_click .slds-dropdown,
+.slds-dropdown-trigger_click:hover .slds-dropdown {
+  z-index: 0 !important;
+  position: relative !important;
+}
+
+[role="combobox"] input[readonly] {
+}
+
+.slds-input[readonly] {
+  cursor: pointer !important;
+}
