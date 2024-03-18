@@ -108,23 +108,18 @@
       class="slds-modal slds-fade-in-open"
     >
       <div class="slds-modal__container">
-        <button
-          class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
-        >
-          <svg
-            class="slds-button__icon slds-button__icon_large"
-            aria-hidden="true"
-          >
-            <use
-              xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"
-            ></use>
-          </svg>
-          <span class="slds-assistive-text">Cancel and close</span>
-        </button>
-        <div class="slds-modal__header">
+        <div class="slds-modal__header" style="display: flex">
           <h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate">
             Cancel
           </h1>
+          <lightning-icon
+            icon-name="utility:close"
+            alternative-text="Close"
+            title="Close"
+            onclick={openPromptModal}
+            style="position: absolute; right: 7px; cursor: pointer"
+          >
+          </lightning-icon>
         </div>
         <div
           class="slds-modal__content slds-p-around_medium"
@@ -143,7 +138,7 @@
         </div>
         <div class="slds-modal__footer">
           <lightning-button
-            label="Close"
+            label="Cancel Order"
             variant="brand"
             class="slds-m-left_x-small"
             onclick={openPromptModal}

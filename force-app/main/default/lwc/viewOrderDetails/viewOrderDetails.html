@@ -1,5 +1,5 @@
 <template>
-  <div if:false={isHistory}>
+  <!-- <div if:false={isHistory}>
     <lightning-button
       variant="brand"
       label="Order History"
@@ -12,15 +12,10 @@
       onclick={getOrdersummary}
       class="slds-m-left_x-small"
     ></lightning-button>
-  </div>
+  </div> -->
   <div
     if:false={isHistory}
-    style="
-      margin-top: 12px;
-      text-align: center;
-      margin-bottom: 12px;
-      font-weight: bold;
-    "
+    style="margin-top: 12px; margin-bottom: 12px; font-weight: bold"
   >
     <div if:true={isOrderDetails}>Order History</div>
     <div if:true={isOrderSummary}>Order Summary</div>

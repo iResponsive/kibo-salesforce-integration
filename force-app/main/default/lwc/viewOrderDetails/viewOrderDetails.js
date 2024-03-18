@@ -6,7 +6,7 @@ export default class ViewOrderDetails extends NavigationMixin(
   LightningElement
 ) {
   customStylesURL = styles;
-  isOrderDetails = false;
+  isOrderDetails = true;
   isOrderSummary = false;
   isHistory = false;
   @api orderDetails = [
@@ -55,15 +55,19 @@ export default class ViewOrderDetails extends NavigationMixin(
     this.isOrderDetails = false;
   }
 
-  handleClick(event) {
-    console.log(event, event.target.dataset.item);
+  handleClick() {
     this.isHistory = true;
     this.isOrderDetails = this.isOrderSummary = false;
+    const custEvent = new CustomEvent("close", { detail: true });
+    console.log(custEvent);
+    this.dispatchEvent(custEvent);
   }
 
   callFromChild(event) {
-    console.log(event.detail);
     this.isOrderDetails = event.detail;
     this.isHistory = !event.detail;
+    const custEvent = new CustomEvent("close", { detail: false });
+    console.log(custEvent);
+    this.dispatchEvent(custEvent);
   }
 }
