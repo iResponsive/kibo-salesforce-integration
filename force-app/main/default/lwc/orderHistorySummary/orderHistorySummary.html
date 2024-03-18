@@ -1,0 +1,152 @@
+<template>
+  <div class="card">
+    <lightning-icon
+      icon-name="action:back"
+      alternative-text="Back"
+      title="Back"
+      class="icon slds-p-around_xxx-small"
+      onclick={handleChild}
+    ></lightning-icon>
+    <!--header-->
+    <div class="header">Customer Order Information</div>
+    <!--customer Details-->
+    <div class="body">
+      <!--mail-->
+      <div class="mail">
+        <div style="display: flex">
+          <div class="label">Customer Email :</div>
+          <div class="data">vidya@iresponsive.com</div>
+        </div>
+        <div style="display: flex">
+          <div class="label">Order No :</div>
+          <div class="data">994</div>
+        </div>
+      </div>
+      <!--address-->
+      <div class="address">
+        <div class="label" style="display: flex">
+          <div>Shipping Address :</div>
+          <lightning-icon
+            icon-name="utility:edit"
+            class="slds-col slds-p-around_xxx-small"
+            alternative-text="Edit"
+            size="small"
+            style="
+              cursor: pointer;
+              height: 20px;
+              width: 20px;
+              margin-top: -11px;
+              margin-left: 11px;
+            "
+          ></lightning-icon>
+        </div>
+        <div class="address_body">
+          <span>New street</span>
+          <span>Mary Land</span>
+          <span>GA</span>
+          <span>US</span>
+          <span>47865</span>
+        </div>
+      </div>
+      <!--shipment-->
+      <div class="shipment">
+        <div style="display: flex">
+          <div class="label">Shipment :</div>
+          <div class="data">1/1</div>
+        </div>
+        <!--table-->
+        <div>
+          <lightning-datatable
+            key-field="id"
+            data={dataList}
+            columns={columns}
+            hide-checkbox-column="true"
+          >
+          </lightning-datatable>
+        </div>
+        <div class="total">
+          <div class="label" style="margin-right: 14px">Total :</div>
+          <div>{displayedAmount}</div>
+        </div>
+      </div>
+      <!--Status-->
+      <div style="margin-top: 20px; display: flex">
+        <div class="label">Status :</div>
+        <div class="data">CUSTOMER_CARE</div>
+      </div>
+      <!--payment details-->
+      <div class="payment">
+        <div class="label">Payment</div>
+        <div style="display: flex">
+          <div class="label">Balance :</div>
+          <div class="data">0.00</div>
+        </div>
+        <div style="display: flex">
+          <div class="label">Card :</div>
+          <div class="data">**********002 | AMEX | CreditCard</div>
+        </div>
+      </div>
+      <!--button-->
+      <div class="button">
+        <lightning-button
+          variant="brand"
+          label="Cancel Order"
+          class="slds-m-left_x-small"
+          aria-haspopup="dialog"
+          onclick={openPromptModal}
+        ></lightning-button>
+      </div>
+    </div>
+  </div>
+
+  <!--Modal-->
+  <div if:true={isModalOpen}>
+    <section
+      role="dialog"
+      tabindex="-1"
+      aria-modal="true"
+      aria-labelledby="modal-heading-01"
+      class="slds-modal slds-fade-in-open"
+    >
+      <div class="slds-modal__container">
+        <div class="slds-modal__header" style="display: flex">
+          <h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate">
+            Cancel
+          </h1>
+          <lightning-icon
+            icon-name="utility:close"
+            alternative-text="Close"
+            title="Close"
+            onclick={openPromptModal}
+            style="position: absolute; right: 7px; cursor: pointer"
+          >
+          </lightning-icon>
+        </div>
+        <div
+          class="slds-modal__content slds-p-around_medium"
+          id="modal-content-id-1"
+          style="cursor: pointer !important"
+        >
+          <lightning-combobox
+            name="progress"
+            label="Cancel Reason"
+            value={value}
+            placeholder="Select Progress"
+            options={options}
+            class="combo"
+            onchange={handleChange}
+          ></lightning-combobox>
+        </div>
+        <div class="slds-modal__footer">
+          <lightning-button
+            label="Cancel Order"
+            variant="brand"
+            class="slds-m-left_x-small"
+            onclick={openPromptModal}
+          ></lightning-button>
+        </div>
+      </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+  </div>
+</template>
