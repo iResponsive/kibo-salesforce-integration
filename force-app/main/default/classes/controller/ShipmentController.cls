@@ -16,13 +16,11 @@ public class ShipmentController {
         Http http = new Http();
        List<Object> items = null;
         try {
-           System.debug('Before sending request.....');
             HttpResponse response = http.send(request);
-
             if (response.getStatusCode() == 200) {
               
                 String responseBody = response.getBody();
-                System.debug('Response of Order details: ' + responseBody);
+                //System.debug('Response of getShipmentDetailsByOrderNumber: ' + responseBody);
                 // Deserialize the JSON response
                 // // String is the key and object will be the list : orderDetails tag
                // List<Map<String, Object>> responseArray = (List<Map<String, Object>>) JSON.deserializeUntyped(responseBody);

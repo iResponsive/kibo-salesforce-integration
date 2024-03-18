@@ -5,10 +5,10 @@ public class AuthController {
         // String accessToken = '';
         String accessToken = AccessTokenManager.getAccessToken();
         if (accessToken != null) {
-            System.debug('In IF condition check for accessToken:: '+accessToken);
+           // System.debug('In IF condition check for accessToken:: '+accessToken);
              return accessToken;
         }else{
-            System.debug('In ELSE condition check for accessToken:: '+accessToken);
+           // System.debug('In ELSE condition check for accessToken:: '+accessToken);
             String baseURL = Constants.BASE_URL;
             String getTokenURI = Constants.AUTH_URI;
             
@@ -19,13 +19,11 @@ public class AuthController {
             Http http = new Http();
            
             try {
-               
                 HttpResponse response = http.send(request);
-    
                 if (response.getStatusCode() == 200) {
                   
                     String responseBody = response.getBody();
-                    System.debug('Response: ' + responseBody);
+                   // System.debug('Response: ' + responseBody);
                     // Deserialize the JSON response
                     Map<String, Object> parsedResponse = (Map<String, Object>) JSON.deserializeUntyped(responseBody);
                     Object value = parsedResponse.get('accessToken');
