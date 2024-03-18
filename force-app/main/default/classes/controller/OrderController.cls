@@ -14,13 +14,11 @@ public class OrderController {
            Http http = new Http();
            List<Object> items = null;
             try {
-               System.debug('Before sending request.....');
                 HttpResponse response = http.send(request);
-    
                 if (response.getStatusCode() == 200) {
                   
                     String responseBody = response.getBody();
-                    System.debug('Response of Order details: ' + responseBody);
+                   // System.debug('Response of Order details: ' + responseBody);
                     // Deserialize the JSON response
                     Map<String, Object> parsedResponse = (Map<String, Object>) JSON.deserializeUntyped(responseBody);
                     items = (List<Object>)parsedResponse.get('orderDetails');
@@ -50,16 +48,50 @@ public class OrderController {
         Http http = new Http();
         List<Object> items = null;
         try {
-           System.debug('Before sending request.....');
             HttpResponse response = http.send(request);
-
             if (response.getStatusCode() == 200) {
               
                 String responseBody = response.getBody();
-                System.debug('Response of Order details: ' + responseBody);
+                //System.debug('Response of Order details: ' + responseBody);
                 // Deserialize the JSON response
 				Map<String, Object> parsedResponse = (Map<String, Object>) JSON.deserializeUntyped(responseBody);
                 items = (List<Object>)parsedResponse.get('orderHistory');
+               // System.debug('print orderDetails:::'+orderDetails);
+                            		
+            } else {
+                System.debug('Error: HTTP request failed with status code ' + response.getStatusCode());
+            }
+        } catch (Exception e) {
+            System.debug('Exception caught: ' + e.getMessage());
+        }
+       return items;
+     	
+    }
+
+    @AuraEnabled
+    public static List<Object> getOrderCancellationReasons(){
+        String accessToken = AuthController.getAuthToken();
+      //  System.debug('accessToken in getOrderCancellationReasons:: '+accessToken);
+        String baseURL = Constants.BASE_URL;
+        String getOrderCancelReasonsURI = Constants.GET_ORDER_CANCEL_REASONS_URI;
+       
+        HttpRequest request = new HttpRequest();
+        request.setEndpoint(baseURL+getOrderCancelReasonsURI);
+        request.setMethod('GET');
+        request.setHeader('Authorization', 'Bearer '+accessToken);
+ 
+        Http http = new Http();
+        List<Object> items = null;
+        try {
+          
+            HttpResponse response = http.send(request);
+            if (response.getStatusCode() == 200) {
+              
+                String responseBody = response.getBody();
+               // System.debug('Response of getOrderCancellationReasons: ' + responseBody);
+                // Deserialize the JSON response
+				Map<String, Object> parsedResponse = (Map<String, Object>) JSON.deserializeUntyped(responseBody);
+                items = (List<Object>)parsedResponse.get('orderCancelReasons');
                // System.debug('print orderDetails:::'+orderDetails);
                             		
             } else {
