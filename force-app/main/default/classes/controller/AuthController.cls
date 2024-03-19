@@ -1,6 +1,5 @@
 public class AuthController {
     
-    @AuraEnabled
     public static String getAuthToken(){
         // String accessToken = '';
         String accessToken = AccessTokenManager.getAccessToken();
