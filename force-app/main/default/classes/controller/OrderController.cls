@@ -1,5 +1,5 @@
 public class OrderController {
-    @AuraEnabled
+    
     public static List<Object> getOrderDetailsByOrderNumber(String orderNumber){
      	String accessToken = AuthController.getAuthToken();
            // System.debug('accessToken in getOrderDetailsByOrderNumber:: '+accessToken);
@@ -33,7 +33,7 @@ public class OrderController {
         
            return items;
     }
-    @AuraEnabled
+    
     public static List<Object> getOrderHistoryByEmailId(String emailId){
         String accessToken = AuthController.getAuthToken();
       //  System.debug('accessToken in getOrderHistoryByEmailId:: '+accessToken);
@@ -68,7 +68,7 @@ public class OrderController {
      	
     }
 
-    @AuraEnabled
+    
     public static List<Object> getOrderCancellationReasons(){
         String accessToken = AuthController.getAuthToken();
       //  System.debug('accessToken in getOrderCancellationReasons:: '+accessToken);
