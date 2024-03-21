@@ -1,5 +1,5 @@
-public class AuthController {
-    
+public with sharing class AuthController {
+    @AuraEnabled
     public static String getAuthToken(){
         // String accessToken = '';
         String accessToken = AccessTokenManager.getAccessToken();
