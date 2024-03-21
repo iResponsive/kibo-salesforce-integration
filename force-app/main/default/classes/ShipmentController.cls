@@ -1,6 +1,6 @@
-public class ShipmentController {
+public with sharing class ShipmentController {
 
-    
+    @AuraEnabled
     public static List<Object> getShipmentDetailsByOrderNumber(String orderNumber){
         String accessToken = AuthController.getAuthToken();
            // System.debug('accessToken in getOrderDetailsByOrderNumber:: '+accessToken);

@@ -1,5 +1,5 @@
-public class OrderController {
-    
+public with sharing class OrderController {
+    @AuraEnabled
     public static List<Object> getOrderDetailsByOrderNumber(String orderNumber){
      	String accessToken = AuthController.getAuthToken();
            // System.debug('accessToken in getOrderDetailsByOrderNumber:: '+accessToken);
