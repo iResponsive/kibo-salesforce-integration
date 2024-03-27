@@ -1,6 +1,6 @@
-public with sharing class OrderController {
+global with sharing class OrderController {
     @AuraEnabled
-    public static List<Object> getOrderDetailsByOrderNumber(String orderNumber){
+    global static List<Object> getOrderDetailsByOrderNumber(String orderNumber){
      	String accessToken = AuthController.getAuthToken();
            // System.debug('accessToken in getOrderDetailsByOrderNumber:: '+accessToken);
           	String baseURL = Constants.BASE_URL;
@@ -33,8 +33,9 @@ public with sharing class OrderController {
         
            return items;
     }
-    
-    public static List<Object> getOrderHistoryByEmailId(String emailId){
+
+    @AuraEnabled
+    global static List<Object> getOrderHistoryByEmailId(String emailId){
         String accessToken = AuthController.getAuthToken();
       //  System.debug('accessToken in getOrderHistoryByEmailId:: '+accessToken);
         String baseURL = Constants.BASE_URL;
@@ -68,8 +69,8 @@ public with sharing class OrderController {
      	
     }
 
-    
-    public static List<Object> getOrderCancellationReasons(){
+    @AuraEnabled
+    global static List<Object> getOrderCancellationReasons(){
         String accessToken = AuthController.getAuthToken();
       //  System.debug('accessToken in getOrderCancellationReasons:: '+accessToken);
         String baseURL = Constants.BASE_URL;

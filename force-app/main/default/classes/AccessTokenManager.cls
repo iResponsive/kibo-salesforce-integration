@@ -1,13 +1,13 @@
-public class AccessTokenManager {
- 	private static String accessToken;
+global class AccessTokenManager {
+    private static String accessToken;
 
-    // Method to set the access token
-    public static void setAccessToken(String token) {
-        accessToken = token;
-    }
+   // Method to set the access token
+   global static void setAccessToken(String token) {
+       accessToken = token;
+   }
 
-    // Method to get the access token
-    public static String getAccessToken() {
-        return accessToken;
-    }
+   // Method to get the access token
+   global static String getAccessToken() {
+       return accessToken;
+   }
 }

@@ -1,7 +1,7 @@
-public with sharing class ShipmentController {
+global with sharing class ShipmentController {
 
     @AuraEnabled
-    public static List<Object> getShipmentDetailsByOrderNumber(String orderNumber){
+    global static List<Object> getShipmentDetailsByOrderNumber(String orderNumber){
         String accessToken = AuthController.getAuthToken();
            // System.debug('accessToken in getOrderDetailsByOrderNumber:: '+accessToken);
         String baseURL = Constants.BASE_URL;
