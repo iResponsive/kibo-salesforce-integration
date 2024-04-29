@@ -1,6 +1,6 @@
-global with sharing class AuthController {
+public with sharing class AuthController {
     @AuraEnabled
-    global static String getAuthToken(){
+    public static String getAuthToken(){
         // String accessToken = '';
         String accessToken = AccessTokenManager.getAccessToken();
         if (accessToken != null) {
