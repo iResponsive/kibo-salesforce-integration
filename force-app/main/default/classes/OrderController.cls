@@ -106,7 +106,7 @@ public with sharing class OrderController {
     }
     
     @AuraEnabled
-    public static Object cancelOrder(OrderCancelData orderCancelData){
+    public static Object cancelOrder(String jsonData){
         String accessToken = AuthController.getAuthToken();
        // System.debug('accessToken in cancelOrder:: '+accessToken);
          Object item = null;
@@ -120,8 +120,8 @@ public with sharing class OrderController {
             request.setHeader('Authorization', 'Bearer '+accessToken);
             request.setHeader('Content-Type', 'application/json');
     
-            String jsonString = JSON.serialize(orderCancelData);
-            request.setBody(jsonString);
+            //String jsonString = JSON.serialize(orderCancelData);
+            request.setBody(jsonData);
             Http http = new Http();
            
             try {
@@ -149,7 +149,7 @@ public with sharing class OrderController {
     }
     
     @AuraEnabled
-    public static Object editShipmentAddress(FulfillmentInfo fulfillmentInfo){
+    public static Object editShipmentAddress(String jsonData){
                
         String accessToken = AuthController.getAuthToken();
        // System.debug('accessToken in editShipmentAddress:: '+accessToken);
@@ -164,9 +164,9 @@ public with sharing class OrderController {
             request.setHeader('Authorization', 'Bearer '+accessToken);
             request.setHeader('Content-Type', 'application/json');
           
-            String jsonString = JSON.serialize(fulfillmentInfo);
+            //String jsonString = JSON.serialize(fulfillmentInfo);
            // System.debug('jsonString:: '+jsonString);
-            request.setBody(jsonString);
+            request.setBody(jsonData);
             Http http = new Http();
           
             try {
