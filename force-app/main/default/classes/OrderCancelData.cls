@@ -1,9 +1,17 @@
 public class OrderCancelData {
-
+    @AuraEnabled
     public String orderId { get; set; }
+
+    @AuraEnabled
     public String reasonCode { get; set; }
+
+    @AuraEnabled
     public String description { get; set; }
+
+    @AuraEnabled
     public String moreInfo { get; set; }
+    
+    @AuraEnabled
     public Integer siteId { get; set; }
     
     // Constructor to initialize the properties
