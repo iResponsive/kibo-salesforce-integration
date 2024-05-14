@@ -1,0 +1,66 @@
+<template>
+  <template
+    for:each={nonTransferShipments}
+    for:item="shipment"
+    for:index="index"
+  >
+    <div key={shipment.id}>
+      <div data-value={shipment.id} data-item={shipment}>
+        <div>
+          <b>Shipment: {shipment.index}/{nonTransferShipments.length}</b>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Quantity</th>
+              <th>Discount</th>
+              <th style="text-align: end">Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template for:each={shipment.items} for:item="item">
+              <tr key={item.quantity}>
+                <td>{item.name}</td>
+                <td>{item.quantity}</td>
+                <td>$ {item.itemDiscount}</td>
+                <td style="text-align: end">$ {item.actualPrice}</td>
+              </tr>
+            </template>
+            <tr>
+              <td colspan="2"></td>
+              <td style="text-align: end"><b>Total:</b></td>
+              <td style="text-align: end">$ {shipment.lineItemSubtotal}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <p><b>Status: </b> {shipment.shipmentStatus}</p>
+      </div>
+      <div>
+        <template
+          for:each={shipment.packages}
+          for:item="pkg"
+          for:index="packageIndex"
+        >
+          <div key={shipment.packages}>
+            <template
+              for:each={pkg.trackingNumbers}
+              for:item="trackingNumber"
+              for:index="index"
+            >
+              <p key={trackingNumber}>
+                <b>Tracking No: </b>
+                <a href="#" target="_blank" rel="noopener noreferrer">
+                  {trackingNumber}
+                </a>
+              </p>
+            </template>
+          </div>
+        </template>
+      </div>
+    </div>
+  </template>
+  <br />
+</template>

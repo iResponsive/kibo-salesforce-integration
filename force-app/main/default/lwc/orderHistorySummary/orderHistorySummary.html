@@ -15,11 +15,11 @@
       <div class="mail">
         <div style="display: flex">
           <div class="label">Customer Email :</div>
-          <div class="data">vidya@iresponsive.com</div>
+          <div class="data">{orderSummary.fulfillmentContact.email}</div>
         </div>
         <div style="display: flex">
           <div class="label">Order No :</div>
-          <div class="data">994</div>
+          <div class="data">{orderNo}</div>
         </div>
       </div>
       <!--address-->
@@ -27,10 +27,12 @@
         <div class="label" style="display: flex">
           <div>Shipping Address :</div>
           <lightning-icon
+            onclick={openEditShipmentPopUp}
             icon-name="utility:edit"
             class="slds-col slds-p-around_xxx-small"
             alternative-text="Edit"
             size="small"
+            if:false={isEdit}
             style="
               cursor: pointer;
               height: 20px;
@@ -41,49 +43,27 @@
           ></lightning-icon>
         </div>
         <div class="address_body">
-          <span>New street</span>
-          <span>Mary Land</span>
-          <span>GA</span>
-          <span>US</span>
-          <span>47865</span>
+          <span>{address1}</span>
+          <span>{address2}</span>
+          <span>{stateOrProvince}</span>
+          <span>{countryCode}</span>
+          <span>{postalOrZipCode}</span>
         </div>
       </div>
       <!--shipment-->
       <div class="shipment">
-        <div style="display: flex">
-          <div class="label">Shipment :</div>
-          <div class="data">1/1</div>
-        </div>
-        <!--table-->
-        <div>
-          <lightning-datatable
-            key-field="id"
-            data={dataList}
-            columns={columns}
-            hide-checkbox-column="true"
-          >
-          </lightning-datatable>
-        </div>
-        <div class="total">
-          <div class="label" style="margin-right: 14px">Total :</div>
-          <div>{displayedAmount}</div>
-        </div>
-      </div>
-      <!--Status-->
-      <div style="margin-top: 20px; display: flex">
-        <div class="label">Status :</div>
-        <div class="data">CUSTOMER_CARE</div>
+        <c-history-table shipment-details={details}></c-history-table>
       </div>
       <!--payment details-->
       <div class="payment">
         <div class="label">Payment</div>
         <div style="display: flex">
           <div class="label">Balance :</div>
-          <div class="data">0.00</div>
+          <div class="data">{formattedBalance}</div>
         </div>
         <div style="display: flex">
           <div class="label">Card :</div>
-          <div class="data">**********002 | AMEX | CreditCard</div>
+          <div class="data">{cardNumber}</div>
         </div>
       </div>
       <!--button-->
@@ -93,6 +73,7 @@
           label="Cancel Order"
           class="slds-m-left_x-small"
           aria-haspopup="dialog"
+          if:false={isCancel}
           onclick={openPromptModal}
         ></lightning-button>
       </div>
@@ -106,47 +87,186 @@
       tabindex="-1"
       aria-modal="true"
       aria-labelledby="modal-heading-01"
-      class="slds-modal slds-fade-in-open"
+      class="slds-modal slds-fade-in-open slds-modal_small"
     >
       <div class="slds-modal__container">
-        <div class="slds-modal__header" style="display: flex">
+        <!-- <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse">
+          <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+            <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+          </svg>
+          <span class="slds-assistive-text">Cancel and close</span>
+        </button> -->
+        <div class="slds-modal__header">
           <h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate">
-            Cancel
+            Cancel order - {orderNo}
           </h1>
-          <lightning-icon
-            icon-name="utility:close"
-            alternative-text="Close"
-            title="Close"
-            onclick={openPromptModal}
-            style="position: absolute; right: 7px; cursor: pointer"
-          >
-          </lightning-icon>
         </div>
         <div
           class="slds-modal__content slds-p-around_medium"
           id="modal-content-id-1"
-          style="cursor: pointer !important"
         >
-          <lightning-combobox
-            name="progress"
-            label="Cancel Reason"
-            value={value}
-            placeholder="Select Progress"
-            options={options}
-            class="combo"
-            onchange={handleChange}
-          ></lightning-combobox>
+          <div style="cursor: pointer !important">
+            <lightning-combobox
+              label="Status"
+              value={cancelReasonCode}
+              placeholder="Select Cancel Reason"
+              options={cancelOptions}
+              class="combo"
+              onchange={handleSelectedCancelOption}
+            >
+            </lightning-combobox>
+          </div>
+          <div if:true={isEnableDescription}>
+            <lightning-input
+              type="text"
+              label="Description"
+              data-id="description"
+              style="width: 100%"
+            >
+            </lightning-input>
+          </div>
         </div>
         <div class="slds-modal__footer">
-          <lightning-button
-            label="Cancel Order"
-            variant="brand"
-            class="slds-m-left_x-small"
+          <button
+            class="slds-button slds-button_neutral"
+            aria-label="Cancel and close"
             onclick={openPromptModal}
-          ></lightning-button>
+          >
+            Cancel
+          </button>
+          <button
+            class="slds-button slds-button_brand"
+            onclick={handleCancelOrderEvent}
+          >
+            Cancel Order
+          </button>
         </div>
       </div>
     </section>
-    <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+  </div>
+  <div if:true={isEditShipmentPopup}>
+    <section
+      role="dialog"
+      tabindex="-1"
+      aria-modal="true"
+      aria-labelledby="modal-heading-01"
+      class="slds-modal slds-fade-in-open slds-modal_small"
+    >
+      <div class="slds-modal__container">
+        <div
+          class="slds-modal__content slds-p-around_medium"
+          id="modal-content-id-2"
+        >
+          <div class="edit_textbox_layout">
+            <lightning-combobox
+              name="addressType"
+              label="Address Type"
+              value={addressType}
+              options={addressTypeList}
+              class="combo"
+              lwc:ref="addressType"
+            ></lightning-combobox>
+
+            <lightning-input
+              type="text"
+              label="Address1"
+              required
+              name="addressOne"
+              value={address1}
+              lwc:ref="address1"
+            ></lightning-input>
+            <lightning-input
+              type="text"
+              label="Address 2"
+              name="addressTwo"
+              value={address2}
+              lwc:ref="address2"
+            ></lightning-input>
+            <lightning-input
+              type="text"
+              label="Address 3"
+              name="addressThree"
+              value={address3}
+              lwc:ref="address3"
+            ></lightning-input>
+            <lightning-input
+              type="text"
+              label="Address 4"
+              name="addressFour"
+              value={address4}
+              lwc:ref="address4"
+            ></lightning-input>
+            <lightning-input
+              type="text"
+              label="City"
+              required
+              name="city"
+              value={cityOrTown}
+              lwc:ref="cityOrTown"
+            ></lightning-input>
+            <lightning-input
+              type="text"
+              label="State "
+              required
+              name="State"
+              value={stateOrProvince}
+              lwc:ref="stateOrProvince"
+            ></lightning-input>
+            <lightning-input
+              type="text"
+              label="ZIP"
+              required
+              name="ZIP"
+              value={postalOrZipCode}
+              lwc:ref="postalOrZipCode"
+            ></lightning-input>
+            <lightning-combobox
+              name="Country"
+              label="Country"
+              required
+              value={countryCode}
+              options={countryList}
+              class="combo"
+              lwc:ref="countryCode"
+            ></lightning-combobox>
+            <lightning-input
+              type="text"
+              label="Home Phone"
+              required
+              name="Home Phone"
+              value={home}
+              lwc:ref="home"
+            ></lightning-input>
+            <lightning-input
+              type="text"
+              label="Work Phone"
+              name="Work Phone"
+              value={work}
+              lwc:ref="work"
+            ></lightning-input>
+            <lightning-input
+              type="text"
+              label="Mobile Phone"
+              name="Mobile Phone"
+              value={mobile}
+              lwc:ref="mobile"
+            >
+            </lightning-input>
+          </div>
+        </div>
+        <div class="slds-modal__footer">
+          <button
+            class="slds-button slds-button_neutral"
+            aria-label="Cancel and close"
+            onclick={closeEditPopup}
+          >
+            Cancel
+          </button>
+          <button onclick={updateAddress} class="slds-button slds-button_brand">
+            Update Address
+          </button>
+        </div>
+      </div>
+    </section>
   </div>
 </template>

@@ -1,79 +1,55 @@
 <template>
-  <!-- <div if:false={isHistory}>
-    <lightning-button
-      variant="brand"
-      label="Order History"
-      onclick={getOrderDetails}
-      class="slds-m-left_x-small"
-    ></lightning-button>
-    <lightning-button
-      variant="brand"
-      label="Order Summary"
-      onclick={getOrdersummary}
-      class="slds-m-left_x-small"
-    ></lightning-button>
-  </div> -->
   <div
     if:false={isHistory}
     style="margin-top: 12px; margin-bottom: 12px; font-weight: bold"
   >
-    <div if:true={isOrderDetails}>Order History</div>
-    <div if:true={isOrderSummary}>Order Summary</div>
+    <div if:true={isHistoryValue}>Order History</div>
+    <div if:true={isSummary}>Order Summary</div>
   </div>
-  <div if:true={isOrderDetails}>
-    <template for:each={orderDetails} for:item="order">
-      <div key={order.orderNo} class="mainLayout">
-        <div class="card" onclick={handleClick} data-item={order}>
-          <div style="display: flex">
-            <div class="label">Order No :</div>
-            <div class="label_content">{order.orderNo}</div>
-          </div>
-          <div style="display: flex">
-            <div class="label">Order Date :</div>
-            <div class="label_content">{order.orderDate}</div>
-          </div>
-          <div style="display: flex">
-            <div class="label">Order Status :</div>
-            <div class="label_content">{order.orderStatus}</div>
-          </div>
-          <div style="display: flex">
-            <div class="label">Return Status :</div>
-            <div class="label_content">{order.returnStatus}</div>
+  <div if:false={isHistory}>
+    <div if:true={receivedValue}>
+      <template for:each={receivedValue} for:item="order">
+        <div key={order.orderNumber} class="mainLayout">
+          <div
+            class="card"
+            data-value={order.orderNumber}
+            onclick={handleClick}
+            data-item={order}
+            data-id={order.orderNumber}
+          >
+            <div style="display: flex">
+              <div class="label">Order No :</div>
+              <div class="label_content">{order.orderNumber}</div>
+            </div>
+            <div style="display: flex">
+              <div class="label">Order Date :</div>
+              <div class="label_content">{order.submittedDate}</div>
+            </div>
+            <div style="display: flex">
+              <div class="label">Order Status :</div>
+              <div class="label_content">{order.status}</div>
+            </div>
+            <div style="display: flex">
+              <div class="label">Return Status :</div>
+              <div class="label_content">{order.returnStatus}</div>
+            </div>
           </div>
         </div>
-      </div>
-    </template>
+      </template>
+    </div>
   </div>
-  <div if:true={isOrderSummary}>
-    <template for:each={orderSummary} for:item="order">
-      <div key={order.orderNo} class="mainLayout" data-item={order}>
-        <div class="card" onclick={handleClick} data-item={order}>
-          <div style="display: flex">
-            <div class="label">Order No :</div>
-            <div class="label_content">{order.orderNo}</div>
-          </div>
-          <div style="display: flex">
-            <div class="label">Order Date :</div>
-            <div class="label_content">{order.orderDate}</div>
-          </div>
-          <div style="display: flex">
-            <div class="label">Order Status :</div>
-            <div class="label_content">{order.orderStatus}</div>
-          </div>
-          <div style="display: flex">
-            <div class="label">Return Status :</div>
-            <div class="label_content">{order.returnStatus}</div>
-          </div>
-        </div>
-      </div>
-    </template>
-  </div>
-
   <!--child-->
   <div if:true={isHistory}>
     <c-order-history-summary
-      details="details"
+      details={filterSummaryDetails}
+      order-summary={fulfillmentInfo}
       onclose={callFromChild}
+      billing-info={billingInfo}
+      order-no={orderNumber}
+      site-id={siteId}
+      order-id={orderId}
+      selected-order-detail={selectedOrderDetail}
+      fulfillment-status={fulfillmentStatus}
     ></c-order-history-summary>
   </div>
 </template>

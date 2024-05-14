@@ -1,49 +1,26 @@
 import { LightningElement, api } from "lwc";
 import { NavigationMixin } from "lightning/navigation";
 import styles from "./viewOrderDetails.css";
+import getShipmentDetailsByOrderNumber from "@salesforce/apex/ShipmentController.getShipmentDetailsByOrderNumber";
 
 export default class ViewOrderDetails extends NavigationMixin(
   LightningElement
 ) {
   customStylesURL = styles;
-  isOrderDetails = true;
-  isOrderSummary = false;
+  @api isHistoryValue;
+  @api isSummary;
   isHistory = false;
-  @api orderDetails = [
-    {
-      orderNo: 1,
-      orderDate: "3/10/2023",
-      orderStatus: "Accepted",
-      returnStatus: "None"
-    },
-    {
-      orderNo: 2,
-      orderDate: "3/5/2024",
-      orderStatus: "Completed",
-      returnStatus: "None"
-    },
-    {
-      orderNo: 3,
-      orderDate: "3/5/2024",
-      orderStatus: "Completed",
-      returnStatus: "None"
-    },
-    {
-      orderNo: 4,
-      orderDate: "3/5/2024",
-      orderStatus: "Accepted",
-      returnStatus: "None"
-    }
-  ];
-
-  @api orderSummary = [
-    {
-      orderNo: 1,
-      orderDate: "3/10/2023",
-      orderStatus: "Processing",
-      returnStatus: "None"
-    }
-  ];
+  @api receivedValue;
+  summaryDetails;
+  fulfillmentInfo;
+  billingInfo;
+  orderNumber;
+  siteId;
+  orderId;
+  filterSummaryDetails;
+  selectedOrderDetail;
+  detailsSystem;
+  fulfillmentStatus;
 
   getOrderDetails() {
     this.isOrderDetails = true;
@@ -55,19 +32,51 @@ export default class ViewOrderDetails extends NavigationMixin(
     this.isOrderDetails = false;
   }
 
-  handleClick() {
-    this.isHistory = true;
+  handleClick(event) {
+    this.orderNumber = event.currentTarget.dataset.id;
+    // eslint-disable-next-line @lwc/lwc/no-api-reassignments
     this.isOrderDetails = this.isOrderSummary = false;
+    this.selectedOrderDetail = [];
+    getShipmentDetailsByOrderNumber({ orderNumber: this.orderNumber }).then(
+      (result) => {
+        this.summaryDetails = result;
+        this.siteId = this.summaryDetails[0].siteId;
+        this.selectedOrderDetail = this.summaryDetails[0];
+        if (result.some((res) => res.childShipmentNumbers?.length)) {
+          this.detailsSystem = result.find(
+            (res) => res.childShipmentNumbers?.length > 0
+          );
+          this.filterSummaryDetails = this.summaryDetails?.filter((element) =>
+            this.detailsSystem?.childShipmentNumbers?.some(
+              (re) => re === element.shipmentNumber
+            )
+          );
+        } else {
+          this.filterSummaryDetails = this.summaryDetails;
+        }
+        this.fulfillmentStatus = this.receivedValue[0].fulfillmentStatus;
+        this.orderId = this.filterSummaryDetails[0]?.orderId;
+        this.orderId = this.summaryDetails?.orderId;
+        this.selectedOrderDetail = this.receivedValue;
+        const orderInformation = this.receivedValue?.filter(
+          (order) => +order.orderNumber === +this.orderNumber
+        );
+        this.fulfillmentInfo = orderInformation[0].fulfillmentInfo;
+        this.billingInfo = orderInformation[0].billingInfo;
+        if (result.length > 0) {
+          this.isHistory = true;
+        }
+      }
+    );
     const custEvent = new CustomEvent("close", { detail: true });
-    console.log(custEvent);
     this.dispatchEvent(custEvent);
   }
 
   callFromChild(event) {
+    // eslint-disable-next-line @lwc/lwc/no-api-reassignments
     this.isOrderDetails = event.detail;
     this.isHistory = !event.detail;
     const custEvent = new CustomEvent("close", { detail: false });
-    console.log(custEvent);
     this.dispatchEvent(custEvent);
   }
 }

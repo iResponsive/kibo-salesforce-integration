@@ -1,7 +1,12 @@
 <template>
+  <lightning-spinner
+    if:true={showSpinner}
+    alternative-text="Loading"
+  ></lightning-spinner>
   <lightning-layout multiple-rows>
     <lightning-layout-item size="8" padding="slds-p-around_x-small">
-      <lightning-card
+      <div
+        class="slds-card"
         title="Customer Order Information"
         icon-name="utility:search"
         if:false={isViewSearch}
@@ -15,9 +20,8 @@
               <lightning-input
                 type="email"
                 label="Email ID"
-                value={email}
                 name="emailId"
-                onchange={handleEmailInputChange}
+                data-id="emailId"
                 style="width: 100%"
               ></lightning-input>
               <lightning-icon
@@ -35,8 +39,7 @@
               <lightning-input
                 type="text"
                 label="Order ID"
-                value={orderNo}
-                onchange={handleOrderIdInputChange}
+                data-id="orderNo"
                 style="width: 100%"
               ></lightning-input>
 
@@ -59,11 +62,16 @@
             </div>
           </div>
         </div>
-      </lightning-card>
+      </div>
     </lightning-layout-item>
   </lightning-layout>
 
   <div if:true={isShowHistory}>
-    <c-view-order-details onclose={callFromChild}></c-view-order-details>
+    <c-view-order-details
+      onclose={callFromChild}
+      received-value={orderSummary}
+      is-history-value={isOrderDetails}
+      is-summary={isOrderSummary}
+    ></c-view-order-details>
   </div>
 </template>

@@ -56,9 +56,11 @@
   cursor: pointer;
 }
 
-.slds-icon {
-  height: 24px !important;
-  width: 24px !important;
+.icon .slds-icon svg {
+  width: 20px !important;
+  height: 20px !important;
+  margin-top: 6px !important;
+  margin-left: 5px !important;
 }
 
 .slds-modal__container {
@@ -89,4 +91,17 @@
 .slds-icon-text-default {
   width: 1.3rem !important;
   height: 1.3rem !important;
+}
+
+.slds-fade-in-open {
+  backdrop-filter: brightness(0.5) !important;
+}
+
+::-webkit-scrollbar {
+  background-color: #4f61db;
+  width: 4px;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: #e6eaef;
 }
