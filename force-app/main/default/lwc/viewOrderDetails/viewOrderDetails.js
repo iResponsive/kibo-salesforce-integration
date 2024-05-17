@@ -56,7 +56,6 @@ export default class ViewOrderDetails extends NavigationMixin(
         }
         this.fulfillmentStatus = this.receivedValue[0].fulfillmentStatus;
         this.orderId = this.filterSummaryDetails[0]?.orderId;
-        this.orderId = this.summaryDetails?.orderId;
         this.selectedOrderDetail = this.receivedValue;
         const orderInformation = this.receivedValue?.filter(
           (order) => +order.orderNumber === +this.orderNumber
