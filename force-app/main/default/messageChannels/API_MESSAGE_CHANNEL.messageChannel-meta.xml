@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<LightningMessageChannel xmlns="http://soap.sforce.com/2006/04/metadata">
+    <masterLabel>WhateverLabel</masterLabel>
+    <isExposed>true</isExposed>
+    <description>Message channel to pass two pieces of data.</description>
+    <lightningMessageFields>
+        <fieldName>variableOne</fieldName>
+        <description>You can store data in this variable.</description>
+    </lightningMessageFields>
+</LightningMessageChannel>

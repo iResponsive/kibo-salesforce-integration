@@ -1,0 +1,29 @@
+<template>
+    <lightning-card title="Fetch Record From Record Id in LWC">
+        <table border="0" cellspacing="0" cellpadding="0" class="slds-table slds-table_bordered slds-table_col-bordered" style="border-collapse:collapse;">
+            <tr>
+                <th><strong>Case Number</strong></th>
+                <th><strong>Subject</strong></th>
+                <th><strong>Status</strong></th>
+                <th><strong>Description</strong></th>
+                <th><strong>Web Email</strong></th>
+            </tr>
+            <template if:true={caseItemArr}>
+                <template for:each={caseItemArr} for:item='recItem' key={recItem.Id}>
+                    <tr key={recItem.Id}>
+                        <td>{recItem.CaseNumber}</td>
+                        <td>{recItem.Subject}</td>
+                        <td>{recItem.Status}</td>
+                        <td>{recItem.Description}</td>
+                        <td>{recItem.SuppliedEmail}</td>
+                    </tr>
+                </template>
+            </template>
+            <template if:true={error}>
+                <tr>
+                    <td colspan="4" style="color:red;">{error}</td>
+                </tr>
+            </template>
+        </table>
+    </lightning-card>
+</template>
