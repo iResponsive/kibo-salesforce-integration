@@ -41,6 +41,21 @@
               margin-left: 11px;
             "
           ></lightning-icon>
+          <lightning-icon
+            icon-name="utility:edit"
+            class="slds-col slds-p-around_xxx-small disabled-icon"
+            alternative-text="Edit"
+            if:true={isEdit}
+            size="small"
+            style="
+              cursor: not-allowed;
+              height: 20px;
+              width: 20px;
+              margin-top: -11px;
+              margin-left: 11px;
+              opacity: 0.5;
+            "
+          ></lightning-icon>
         </div>
         <div class="address_body">
           <span>{address1}</span>
@@ -71,11 +86,21 @@
         <lightning-button
           variant="brand"
           label="Cancel Order"
-          class="slds-m-left_x-small"
+          class="slds-m-left_x-small slds-button"
           aria-haspopup="dialog"
-          if:false={isCancel}
+          disabled={isCancel}
           onclick={openPromptModal}
-        ></lightning-button>
+        >
+          <div
+            if:false={isCancel}
+            class="slds-popover slds-popover_tooltip slds-nubbin_bottom-left"
+            role="tooltip"
+            id="help"
+            style="position: absolute; top: -4px; left: 35px"
+          >
+            <div class="slds-popover__body">{tooltipMessage}</div>
+          </div>
+        </lightning-button>
       </div>
     </div>
   </div>

@@ -13,54 +13,66 @@
       >
         <div>
           <div class="slds-grid slds-wrap">
-            <div
-              class="slds-size_12-of-12 slds-p-around_small"
-              style="display: flex"
-            >
-              <lightning-input
-                type="email"
-                label="Email ID"
-                name="emailId"
-                data-id="emailId"
-                style="width: 100%"
-                value={email}
-              ></lightning-input>
-              <lightning-icon
+            <div class="inline-elements">
+              <div
+                class="slds-size_12-of-12 slds-p-around_small"
+                style="display: flex; width: 325px"
+              >
+                <lightning-input
+                  type="email"
+                  label="Email ID"
+                  name="emailId"
+                  data-id="emailId"
+                  style="width: 290px"
+                  value={email}
+                  disabled={disabledEmail}
+                ></lightning-input>
+              </div>
+              <lightning-button-icon
+                style="margin-top: 24px"
                 icon-name="utility:edit"
-                class="slds-col slds-p-around_xxx-small"
                 alternative-text="Edit"
-                size="small"
-                style="cursor: pointer; margin-top: 28px"
-              ></lightning-icon>
-            </div>
-            <div
-              class="slds-size_12-of-12 slds-p-around_small"
-              style="display: flex"
-            >
-              <lightning-input
-                type="text"
-                label="Order ID"
-                data-id="orderNo"
-                style="width: 100%"
-                value={orderNo}
-              ></lightning-input>
-
-              <lightning-icon
-                icon-name="utility:edit"
-                class="slds-col slds-p-around_xxx-small"
-                alternative-text="Edit"
-                size="small"
-                style="cursor: pointer; margin-top: 28px"
-              ></lightning-icon>
-            </div>
-            <div class="slds-col slds-size_2-of-2 slds-p-around_small">
+                onclick={enableEmailSearchBoxAndSearchbutton}
+                class="edit-icon"
+              ></lightning-button-icon>
               <lightning-button
-                label="Search"
+                variant="success"
+                if:false={disabledEmail}
+                style="margin-top: 24px"
                 onclick={handleSearch}
-                variant="brand"
-                class="slds-float_right"
-                icon-name="utility:search"
+                label="search"
               ></lightning-button>
+            </div>
+            <div>
+              <div class="inline-elements">
+                <div
+                  class="slds-size_12-of-12 slds-p-around_small"
+                  style="display: flex; width: 325px"
+                >
+                  <lightning-input
+                    type="text"
+                    label="Order ID"
+                    data-id="orderNo"
+                    style="width: 290px"
+                    value={orderNo}
+                    disabled={disabledOrderId}
+                  ></lightning-input>
+                </div>
+                <lightning-button-icon
+                  style="margin-top: 24px"
+                  icon-name="utility:edit"
+                  alternative-text="Edit"
+                  onclick={enableOrderIdSearchBoxAndSearchbutton}
+                  class="edit-icon"
+                ></lightning-button-icon>
+                <lightning-button
+                  variant="success"
+                  if:false={disabledOrderId}
+                  style="margin-top: 24px"
+                  label="search"
+                  onclick={handleSearch}
+                ></lightning-button>
+              </div>
             </div>
           </div>
         </div>

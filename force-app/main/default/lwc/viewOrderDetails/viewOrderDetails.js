@@ -21,6 +21,7 @@ export default class ViewOrderDetails extends NavigationMixin(
   selectedOrderDetail;
   detailsSystem;
   fulfillmentStatus;
+  orderStatus;
 
   getOrderDetails() {
     this.isOrderDetails = true;
@@ -54,7 +55,19 @@ export default class ViewOrderDetails extends NavigationMixin(
         } else {
           this.filterSummaryDetails = this.summaryDetails;
         }
-        this.fulfillmentStatus = this.receivedValue[0].fulfillmentStatus;
+        if (
+          this.receivedValue?.some(
+            (re) => +re.orderNumber === +this.orderNumber
+          )
+        ) {
+          this.orderStatus = this.receivedValue.find(
+            (re) => +re.orderNumber === +this.orderNumber
+          ).status;
+          this.fulfillmentStatus = this.receivedValue.find(
+            (re) => +re.orderNumber === +this.orderNumber
+          ).fulfillmentStatus;
+        }
+
         this.orderId = this.filterSummaryDetails[0]?.orderId;
         this.selectedOrderDetail = this.receivedValue;
         const orderInformation = this.receivedValue?.filter(

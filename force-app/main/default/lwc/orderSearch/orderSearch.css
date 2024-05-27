@@ -1,3 +1,14 @@
 .slds-card {
   width: 474px !important;
 }
+
+.inline-elements {
+  display: flex;
+  align-items: center;
+}
+.inline-elements .input-text {
+  margin-right: 10px;
+}
+.inline-elements .edit-icon {
+  margin-right: 10px;
+}

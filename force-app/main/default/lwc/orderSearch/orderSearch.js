@@ -8,6 +8,7 @@ import {
   subscribe,
   unsubscribe
 } from "lightning/messageService";
+import { showToast } from "c/utils";
 
 export default class OrderSearch extends LightningElement {
   @track showSpinner = false;
@@ -26,6 +27,8 @@ export default class OrderSearch extends LightningElement {
   isOrderDetails = false;
   isOrderSummary = false;
   subscription = null;
+  disabledEmail = true;
+  disabledOrderId = true;
   apiResult;
   localOrderNo;
 
@@ -52,11 +55,6 @@ export default class OrderSearch extends LightningElement {
 
   subscribeToMessageChannel() {
     try {
-      console.log(
-        this.messageContext,
-        "Subscribing to message channel:",
-        API_MESSAGE_CHANNEL
-      );
       this.subscription = subscribe(
         this.messageContext,
         API_MESSAGE_CHANNEL,
@@ -69,13 +67,22 @@ export default class OrderSearch extends LightningElement {
   }
 
   handleMessage(message) {
-    console.log("Message received:", message);
     this.apiResult = message.apiResult;
   }
 
   disconnectedCallback() {
     unsubscribe(this.subscription);
     this.subscription = null;
+  }
+
+  enableEmailSearchBoxAndSearchbutton() {
+    this.disabledEmail = false;
+    this.disabledOrderId = true;
+  }
+
+  enableOrderIdSearchBoxAndSearchbutton() {
+    this.disabledOrderId = false;
+    this.disabledEmail = true;
   }
 
   async handleSearch(orderNo, email) {
@@ -111,9 +118,12 @@ export default class OrderSearch extends LightningElement {
             });
             this.isShowHistory = this.isOrderDetails = true;
             this.isOrderSummary = false;
+          } else {
+            showToast(this, "info", "No records found.");
           }
         })
         .catch((error) => {
+          showToast(this, "error", error);
           console.log("Error:", error);
         })
         .finally(() => {
@@ -136,6 +146,8 @@ export default class OrderSearch extends LightningElement {
             });
             this.isOrderDetails = false;
             this.isOrderSummary = this.isShowHistory = true;
+          } else {
+            showToast(this, "info", "No records found.");
           }
         })
         .catch((error) => {

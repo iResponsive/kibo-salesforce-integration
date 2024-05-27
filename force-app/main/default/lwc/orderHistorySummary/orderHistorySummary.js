@@ -2,6 +2,7 @@ import { LightningElement, api, track } from "lwc";
 import getOrderCancellationReasons from "@salesforce/apex/OrderController.getOrderCancellationReasons";
 import cancelOrder from "@salesforce/apex/OrderController.cancelOrder";
 import editShipmentAddress from "@salesforce/apex/OrderController.editShipmentAddress";
+import { showToast } from "c/utils";
 export default class OrderHistorySummary extends LightningElement {
   @api details;
   @api orderSummary;
@@ -24,7 +25,8 @@ export default class OrderHistorySummary extends LightningElement {
   @track home;
   @track work;
   @track mobile;
-
+  @track showTooltip = false;
+  @api orderStatus;
   cancelReasonCode;
   @api fulfillmentStatus;
   cancelReason;
@@ -40,6 +42,7 @@ export default class OrderHistorySummary extends LightningElement {
   displayedAmount = 0;
   isEdit = false;
   isCancel = false;
+  tooltipMessage = "";
 
   connectedCallback() {
     this.getGrandTotal();
@@ -50,18 +53,22 @@ export default class OrderHistorySummary extends LightningElement {
     this.countryCode = this.orderSummary.fulfillmentContact.address.countryCode;
     this.postalOrZipCode =
       this.orderSummary.fulfillmentContact.address.postalOrZipCode;
-    console.log(
-      JSON.stringify(this.orderSummary),
-      "orderSummary",
-      this.fulfillmentStatus
-    );
     this.isEdit =
       this.fulfillmentStatus === "Fulfilled" ||
-      this.fulfillmentStatus === "PartiallyFulfilled";
+      this.fulfillmentStatus === "PartiallyFulfilled" ||
+      this.orderStatus === "Cancelled" ||
+      this.orderStatus === "Completed";
     this.isCancel =
       this.fulfillmentStatus === "Fulfilled" ||
-      this.fulfillmentStatus === "PartiallyFulfilled";
-    console.log(this.isEdit, this.isCancel);
+      this.fulfillmentStatus === "PartiallyFulfilled" ||
+      this.orderStatus === "Cancelled" ||
+      this.orderStatus === "Completed";
+    this.tooltipMessage =
+      this.fulfillmentStatus === "Fulfilled"
+        ? "Fullfilled orders cannot be cancelled "
+        : this.fulfillmentStatus === "PartiallyFulfilled"
+          ? "Partially Fullfilled orders cannot be cancelled"
+          : "order already cancelled";
   }
 
   get formattedBalance() {
@@ -95,7 +102,6 @@ export default class OrderHistorySummary extends LightningElement {
         console.log(error);
       }
     }
-    console.log(this.cancelOptions, "cancel Options got from apex class");
   }
 
   getDropDownValues() {
@@ -196,10 +202,14 @@ export default class OrderHistorySummary extends LightningElement {
 
     cancelOrder({ jsonData: JSON.stringify(OrderCancelData) })
       .then((result) => {
+        this.isEdit = this.isCancel =
+          result?.status?.toLowerCase() === "cancelled";
+        this.tooltipMessage = "order already cancelled";
+        showToast(this, "success", "Order successfully cancelled");
         this.openPromptModal();
-        this.address1 = result?.fulfillmentContact?.address?.address1;
       })
       .catch((error) => {
+        showToast(this, "error", error);
         console.log(error, "Error");
       });
   }
@@ -265,8 +275,10 @@ export default class OrderHistorySummary extends LightningElement {
         this.mobile =
           updatedAddressResponse.fulfillmentContact.phoneNumbers.mobile;
         this.isEditShipmentPopup = false;
+        showToast(this, "success", "Address updated successfully");
       })
       .catch((error) => {
+        showToast(this, "error", error);
         console.log(error, "Error");
       });
   }
