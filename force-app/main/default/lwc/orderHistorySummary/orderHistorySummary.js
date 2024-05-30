@@ -42,7 +42,8 @@ export default class OrderHistorySummary extends LightningElement {
   displayedAmount = 0;
   isEdit = false;
   isCancel = false;
-  tooltipMessage = "";
+  tooltipMessageEdit = "";
+  toolTipMessageCancel = "";
 
   connectedCallback() {
     this.getGrandTotal();
@@ -65,10 +66,16 @@ export default class OrderHistorySummary extends LightningElement {
       this.orderStatus === "Completed";
     this.tooltipMessage =
       this.fulfillmentStatus === "Fulfilled"
-        ? "Fullfilled orders cannot be cancelled "
+        ? "Fulfilled orders cannot be edited "
         : this.fulfillmentStatus === "PartiallyFulfilled"
-          ? "Partially Fullfilled orders cannot be cancelled"
-          : "order already cancelled";
+          ? "Partially Fulfilled orders cannot be edited"
+          : "Cancelled order cannot be edited";
+    this.toolTipMessageCancel =
+      this.fulfillmentStatus === "Fulfilled"
+        ? "Fulfilled orders cannot be cancelled "
+        : this.fulfillmentStatus === "PartiallyFulfilled"
+          ? "Partially Fulfilled orders cannot be cancelled"
+          : "This order is already cancelled";
   }
 
   get formattedBalance() {

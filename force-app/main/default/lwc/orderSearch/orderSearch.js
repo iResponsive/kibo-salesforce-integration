@@ -92,17 +92,17 @@ export default class OrderSearch extends LightningElement {
       this.email = null;
       this.orderNo = this.template.querySelector(
         'lightning-input[data-id="orderNo"]'
-      ).value;
+      )?.value;
       this.email = this.template.querySelector(
         'lightning-input[data-id="emailId"]'
-      ).value;
+      )?.value;
       if (!this.email && !this.orderNo) {
         return;
       }
     }
 
     this.showSpinner = true;
-    if (this.orderNo || orderNo) {
+    if (this.orderNo || orderNo > 0) {
       this.orderSummary = [];
       getOrderDetailsByOrderNumber({
         orderNumber: this.orderNo ? this.orderNo : orderNo
@@ -132,7 +132,6 @@ export default class OrderSearch extends LightningElement {
           localStorage.removeItem("details");
         });
     }
-
     if ((this.email || email) && !this.orderNo) {
       this.orderSummary = [];
       getOrderHistoryByEmailId({ emailId: this.email })

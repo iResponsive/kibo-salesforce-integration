@@ -31,6 +31,7 @@
             icon-name="utility:edit"
             class="slds-col slds-p-around_xxx-small"
             alternative-text="Edit"
+            onmouseover={showTooltips}
             size="small"
             if:false={isEdit}
             style="
@@ -41,21 +42,29 @@
               margin-left: 11px;
             "
           ></lightning-icon>
-          <lightning-icon
-            icon-name="utility:edit"
-            class="slds-col slds-p-around_xxx-small disabled-icon"
-            alternative-text="Edit"
-            if:true={isEdit}
-            size="small"
-            style="
-              cursor: not-allowed;
-              height: 20px;
-              width: 20px;
-              margin-top: -11px;
-              margin-left: 11px;
-              opacity: 0.5;
-            "
-          ></lightning-icon>
+
+          <div class="hideIcon">
+            <lightning-icon
+              icon-name="utility:edit"
+              class="slds-col slds-p-around_xxx-small disabled-icon"
+              alternative-text="Edit"
+              if:true={isEdit}
+              size="small"
+              style="
+                cursor: not-allowed;
+                height: 20px;
+                width: 20px;
+                margin-top: -11px;
+                margin-left: 11px;
+                opacity: 0.5;
+              "
+            ></lightning-icon>
+            <lightning-helptext
+              if:true={isEdit}
+              content={tooltipMessage}
+              style="margin-left: 12px"
+            ></lightning-helptext>
+          </div>
         </div>
         <div class="address_body">
           <span>{address1}</span>
@@ -82,7 +91,7 @@
         </div>
       </div>
       <!--button-->
-      <div class="button">
+      <div class="button" style="display: flex">
         <lightning-button
           variant="brand"
           label="Cancel Order"
@@ -91,16 +100,13 @@
           disabled={isCancel}
           onclick={openPromptModal}
         >
-          <div
-            if:false={isCancel}
-            class="slds-popover slds-popover_tooltip slds-nubbin_bottom-left"
-            role="tooltip"
-            id="help"
-            style="position: absolute; top: -4px; left: 35px"
-          >
-            <div class="slds-popover__body">{tooltipMessage}</div>
-          </div>
         </lightning-button>
+        <div if:true={isCancel}>
+          <lightning-helptext
+            content={toolTipMessageCancel}
+            style="margin-left: 12px"
+          ></lightning-helptext>
+        </div>
       </div>
     </div>
   </div>
@@ -115,12 +121,6 @@
       class="slds-modal slds-fade-in-open slds-modal_small"
     >
       <div class="slds-modal__container">
-        <!-- <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse">
-          <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
-            <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
-          </svg>
-          <span class="slds-assistive-text">Cancel and close</span>
-        </button> -->
         <div class="slds-modal__header">
           <h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate">
             Cancel order - {orderNo}

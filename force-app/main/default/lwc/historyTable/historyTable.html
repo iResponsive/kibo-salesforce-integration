@@ -50,12 +50,14 @@
               for:item="trackingNumber"
               for:index="index"
             >
-              <p key={trackingNumber}>
-                <b>Tracking No: </b>
-                <a href="#" target="_blank" rel="noopener noreferrer">
-                  {trackingNumber}
-                </a>
-              </p>
+              <div key={trackingNumber}>
+                <p>
+                  <b>Tracking No: </b>
+                  <a href={url} target="_blank" rel="noopener noreferrer">
+                    {trackingNumber}
+                  </a>
+                </p>
+              </div>
             </template>
           </div>
         </template>

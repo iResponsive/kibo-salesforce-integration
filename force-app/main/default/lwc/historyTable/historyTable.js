@@ -4,6 +4,7 @@ export default class HistoryTable extends LightningElement {
   @api shipmentDetails;
   nonTransferShipments;
   nonTransferShipmentsLength;
+  url;
   connectedCallback() {
     const detailsArray = this.shipmentDetails || [];
     this.nonTransferShipments = detailsArray.filter(
@@ -13,6 +14,9 @@ export default class HistoryTable extends LightningElement {
     this.nonTransferShipments = this.nonTransferShipments.map(
       (item, index) => ({ ...item, index: index + 1 })
     );
+    this.url =
+      this.nonTransferShipments[0].packages[0]?.trackings[0]?.url ||
+      `https://www.dhl.com/in-en/home/tracking.html?tracking-id=${this.nonTransferShipments[0]?.packages[0]?.trackings[0]?.number}`;
   }
 
   getShipmentNumber(index) {

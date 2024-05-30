@@ -13,7 +13,7 @@
       >
         <div>
           <div class="slds-grid slds-wrap">
-            <div class="inline-elements">
+            <div class="inline-elements" if:true={email}>
               <div
                 class="slds-size_12-of-12 slds-p-around_small"
                 style="display: flex; width: 325px"
@@ -40,10 +40,10 @@
                 if:false={disabledEmail}
                 style="margin-top: 24px"
                 onclick={handleSearch}
-                label="search"
+                label="Search"
               ></lightning-button>
             </div>
-            <div>
+            <div if:true={orderNo}>
               <div class="inline-elements">
                 <div
                   class="slds-size_12-of-12 slds-p-around_small"
@@ -69,7 +69,7 @@
                   variant="success"
                   if:false={disabledOrderId}
                   style="margin-top: 24px"
-                  label="search"
+                  label="Search"
                   onclick={handleSearch}
                 ></lightning-button>
               </div>
