@@ -1,23 +1,19 @@
-import { LightningElement, track, wire } from "lwc";
+import { LightningElement, api, track, wire } from "lwc";
 import getOrderDetailsByOrderNumber from "@salesforce/apex/OrderController.getOrderDetailsByOrderNumber";
 import getOrderHistoryByEmailId from "@salesforce/apex/OrderController.getOrderHistoryByEmailId";
-import API_MESSAGE_CHANNEL from "@salesforce/messageChannel/API_MESSAGE_CHANNEL__c";
-import {
-  APPLICATION_SCOPE,
-  MessageContext,
-  subscribe,
-  unsubscribe
-} from "lightning/messageService";
+import { unsubscribe } from "lightning/messageService";
 import { showToast } from "c/utils";
+import getCaseRec from "@salesforce/apex/fetchRecordByIdLwc.getCaseRec";
 
 export default class OrderSearch extends LightningElement {
   @track showSpinner = false;
 
-  @wire(MessageContext)
-  messageContext;
+  @api recordId;
+  @track caseItemArr = [];
+  @track error;
 
-  email;
-  orderNo;
+  @track email;
+  @track orderNo;
   isViewSearch = false;
   sticky = false;
   timeout = 3000;
@@ -31,6 +27,7 @@ export default class OrderSearch extends LightningElement {
   disabledOrderId = true;
   apiResult;
   localOrderNo;
+  searchEmail;
 
   handleEmailInputChange(event) {
     this.email = event.target.value;
@@ -40,29 +37,82 @@ export default class OrderSearch extends LightningElement {
     this.orderNo = event.target.value;
   }
 
-  connectedCallback() {
-    this.subscribeToMessageChannel();
-    const value = localStorage.getItem("details");
-    if (JSON.parse(value).orderNo) {
-      this.orderNo = JSON.parse(value).orderNo;
-      this.handleSearch(this.orderNo, null);
-    }
-    if (JSON.parse(value).emailAddress) {
-      this.email = JSON.parse(value).emailAddress;
-      this.handleSearch(null, this.email);
+  @wire(getCaseRec, { recId: "$recordId" })
+  async getInfos({ error, data }) {
+    if (error) {
+      console.error("Error retrieving Case records:", error);
+      this.error = "Error retrieving Case records: " + error.body.message;
+      this.caseItemArr = [];
+    } else if (data) {
+      console.log("Case records retrieved:", data);
+      this.caseItemArr = data;
+      this.error = undefined;
+
+      let emailAddress = "";
+      let orderNo = "";
+      let suppliedEmail = "";
+
+      data.forEach((caseRecord) => {
+        if (caseRecord) {
+          const { Description, SuppliedEmail } = caseRecord;
+          const emailMatch = Description
+            ? Description.match(
+                /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/
+              )
+            : null;
+          const orderMatch = Description
+            ? Description.match(/\b(\d+)\b/)
+            : null;
+
+          if (emailMatch) {
+            emailAddress = emailMatch[0];
+          }
+          if (orderMatch) {
+            orderNo = orderMatch[0];
+          }
+          if (SuppliedEmail) {
+            suppliedEmail = SuppliedEmail;
+          }
+        }
+      });
+
+      let eventData;
+
+      if (emailAddress && orderNo) {
+        console.log("Parsed Email Address:", emailAddress);
+        console.log("Parsed Order Number:", orderNo);
+        eventData = { orderNo, emailAddress };
+      } else if (orderNo) {
+        console.log("Parsed Order Number:", orderNo);
+        eventData = { orderNo };
+      } else if (emailAddress) {
+        console.log("Parsed Email Address:", emailAddress);
+        eventData = { emailAddress };
+      } else if (suppliedEmail) {
+        console.log("Supplied Email:", suppliedEmail);
+        eventData = { emailAddress: suppliedEmail };
+      } else {
+        console.log("No email address or order number found.");
+        eventData = {};
+      }
+      // LMS - Publish the message.
+      localStorage.setItem("details", JSON.stringify(eventData));
+      // this.publishApiResult(eventData); under testing
+      this.dispatchEvent(
+        new CustomEvent("parseddataretrieved", { detail: eventData })
+      );
     }
   }
 
-  subscribeToMessageChannel() {
-    try {
-      this.subscription = subscribe(
-        this.messageContext,
-        API_MESSAGE_CHANNEL,
-        (message) => this.handleMessage(message),
-        { scope: APPLICATION_SCOPE }
-      );
-    } catch (error) {
-      console.log("Subscription error:", error);
+  connectedCallback() {
+    const value = localStorage.getItem("details");
+    if (JSON.parse(value).orderNo) {
+      this.orderNo = JSON.parse(value).orderNo;
+      this.autoSearch(this.orderNo, null);
+    }
+    if (JSON.parse(value).emailAddress) {
+      this.email = JSON.parse(value).emailAddress;
+      this.autoSearch(null, this.email);
     }
   }
 
@@ -85,9 +135,9 @@ export default class OrderSearch extends LightningElement {
     this.disabledEmail = true;
   }
 
-  async handleSearch(orderNo, email) {
+  async autoSearch(orderNo, emailAddress) {
     this.isShowHistory = this.isOrderDetails = this.isOrderSummary = false;
-    if (orderNo?.target?.value === undefined && email === undefined) {
+    if (orderNo?.target?.value === undefined && emailAddress === undefined) {
       this.orderNo = null;
       this.email = null;
       this.orderNo = this.template.querySelector(
@@ -132,7 +182,7 @@ export default class OrderSearch extends LightningElement {
           localStorage.removeItem("details");
         });
     }
-    if ((this.email || email) && !this.orderNo) {
+    if ((this.email || emailAddress) && !this.orderNo) {
       this.orderSummary = [];
       getOrderHistoryByEmailId({ emailId: this.email })
         .then((result) => {
@@ -155,12 +205,96 @@ export default class OrderSearch extends LightningElement {
         .finally(() => {
           this.showSpinner = false;
           localStorage.removeItem("details");
-          email = null;
+          emailAddress = null;
+        });
+    }
+  }
+
+  async handleSearch(email) {
+    if (typeof email === "object") {
+      this.email = this.template.querySelector(
+        'lightning-input[data-id="emailId"]'
+      )?.value;
+    }
+    if (this.email) {
+      this.searchEmail = this.email;
+      this.orderSummary = [];
+      getOrderHistoryByEmailId({ emailId: this.email })
+        .then((result) => {
+          this.orderSummary = result;
+          if (this.orderSummary?.length > 0) {
+            this.orderSummary.forEach((res) => {
+              res.submittedDate = new Date(
+                res.submittedDate
+              ).toLocaleDateString();
+            });
+            this.isOrderDetails = false;
+            this.isOrderSummary = this.isShowHistory = true;
+          } else {
+            showToast(
+              this,
+              "info",
+              `No records found in this mail ${this.email}`
+            );
+          }
+        })
+        .catch((error) => {
+          console.log("Error from search by email:", error);
+        })
+        .finally(() => {
+          this.showSpinner = false;
+          localStorage.removeItem("details");
+        });
+    }
+  }
+
+  async handleOrderSearch(orderNo) {
+    if (typeof orderNo === "object") {
+      this.orderNo = this.template.querySelector(
+        'lightning-input[data-id="orderNo"]'
+      )?.value;
+    }
+    if (this.orderNo) {
+      this.searchEmail = null;
+      this.orderSummary = [];
+      getOrderDetailsByOrderNumber({
+        orderNumber: this.orderNo
+      })
+        .then((result) => {
+          this.orderSummary = result;
+          if (this.orderSummary?.length > 0) {
+            this.orderSummary.forEach((res) => {
+              res.submittedDate = new Date(
+                res.submittedDate
+              ).toLocaleDateString();
+            });
+            this.isShowHistory = this.isOrderDetails = true;
+            this.isOrderSummary = false;
+          } else {
+            showToast(this, "info", "No records found.");
+          }
+        })
+        .catch((error) => {
+          showToast(this, "error", error);
+          console.log("Error:", error);
+        })
+        .finally(() => {
+          this.showSpinner = false;
+          localStorage.removeItem("details");
         });
     }
   }
 
   callFromChild(event) {
     this.isViewSearch = event.detail;
+    if (!this.isViewSearch) {
+      if ((this.searchEmail && this.orderNo) || (this.email && !this.orderNo)) {
+        this.handleSearch(this.email);
+        return;
+      }
+      if (this.orderNo || (!this.searchEmail && this.email && this.orderNo)) {
+        this.handleOrderSearch(this.orderNo);
+      }
+    }
   }
 }

@@ -46,7 +46,6 @@ export default class OrderHistorySummary extends LightningElement {
   toolTipMessageCancel = "";
 
   connectedCallback() {
-    this.getGrandTotal();
     this.address1 = this.orderSummary.fulfillmentContact.address.address1;
     this.address2 = this.orderSummary.fulfillmentContact.address.address2;
     this.stateOrProvince =
@@ -167,16 +166,6 @@ export default class OrderHistorySummary extends LightningElement {
       this.mobile = this.orderSummary.fulfillmentContact.phoneNumbers.mobile;
       this.getDropDownValues();
     }
-  }
-
-  getGrandTotal() {
-    // this.discountAmount = this.dataList.reduce((a, b) => {
-    //   return a + b.Discount;
-    // }, 0);
-    // this.totalAmount = this.dataList.reduce((a, b) => {
-    //   return a + b.Quantity * b.Price;
-    // }, 0);
-    // this.displayedAmount = this.totalAmount - this.discountAmount;
   }
 
   handleChild(event) {
