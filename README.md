@@ -4,7 +4,7 @@ This repository provides the codebase for the integration done between Salesforc
 # Overview 
 
 ## Existing Business Challenge :  
-At Salesforce, the Support team faces delays in gathering order details manually. Our aim to overcome this challenge by streamlining the process within Salesforce through an integration with Kibo.  
+At Salesforce, the Support team faces delays in gathering order details manually. Our aim is to overcome this challenge by streamlining the process within Salesforce through an integration with Kibo.  
 
 ## Objective:  
 - Develop a specialized Salesforce application as a direct link to Kibo.  
@@ -45,9 +45,9 @@ Serves as a proxy application layer to eliminate the CORS policy issue between S
    
 ## Data Parsing and Manipulation:​
 Language: JavaScript
-Here are some documentation resources to get you started.
 
 # Installation and Deployment
+Here are some documentation resources to get you started.
 
 ## How Do You Plan to Deploy Your Changes?
 
@@ -69,4 +69,4 @@ If you need help or have any questions about using the Salesforce-Kibo Integrati
 
 **Documentation:** Refer to the official documentation for detailed instructions on installation, configuration, and usage of the integration.<br>
 **Issue Tracker:** If you encounter a bug or need to report an issue, please open a new issue on our GitHub repository.<br>
-**Contact Us:** For further assistance or inquiries, feel free to contact our support team at [Salesforce Support](sf.iresponsive@gmail.com) We're here to help!<br>
+**Contact Us:** For further assistance or inquiries, feel free to contact our support team at [Salesforce Support](mailto:sf.iresponsive@gmail.com) We're    here to help!<br>
